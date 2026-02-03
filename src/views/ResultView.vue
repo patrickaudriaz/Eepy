@@ -46,7 +46,10 @@ function goHome() {
 <template>
   <div class="result-view">
     <header>
-      <button class="back-link" @click="goHome">Start Over</button>
+      <button class="back-link" @click="goHome">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+        Start Over
+      </button>
     </header>
 
     <div class="content">
@@ -62,6 +65,7 @@ function goHome() {
         >
           <div class="time">{{ item.formatted }}</div>
           <div class="cycles">{{ item.label }}</div>
+          <div v-if="item.cycles >= 5" class="badge">Recommended</div>
         </div>
       </div>
     </div>
@@ -80,20 +84,37 @@ header {
 .back-link {
   background: none;
   border: none;
-  color: var(--color-text);
+  color: var(--color-text-muted);
   font-size: 1rem;
-  padding: 0;
-  width: auto;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--color-text);
 }
 
 .content {
   padding-bottom: 2rem;
 }
 
+h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  background: linear-gradient(to right, #818cf8, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .desc {
   margin-bottom: 2rem;
-  opacity: 0.8;
+  color: var(--color-text-muted);
   text-align: center;
+  font-size: 1rem;
 }
 
 .result-card {
@@ -101,22 +122,43 @@ header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
 .result-card.highlight {
   border-color: var(--color-primary);
-  background: linear-gradient(to bottom right, var(--color-surface), rgba(129, 140, 248, 0.1));
+  background: rgba(129, 140, 248, 0.1);
+  box-shadow: 0 0 30px rgba(129, 140, 248, 0.1);
 }
 
 .time {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #fff;
+  text-shadow: 0 0 20px rgba(129, 140, 248, 0.5);
+  line-height: 1;
+  margin-bottom: 0.5rem;
 }
 
 .cycles {
   font-size: 0.9rem;
-  opacity: 0.6;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.7rem;
+  background: var(--color-primary);
+  color: #0f172a;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 </style>

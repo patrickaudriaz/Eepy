@@ -1,70 +1,84 @@
 :root {
-  --color-bg: #0f172a;
-  --color-surface: #1e293b;
-  --color-text: #f1f5f9;
+  --color-bg-start: #0f172a;
+  --color-bg-end: #1e1b4b;
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-surface-hover: rgba(255, 255, 255, 0.1);
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
   --color-primary: #818cf8;
-  --color-primary-hover: #6366f1;
+  --color-primary-glow: rgba(129, 140, 248, 0.4);
   --color-accent: #c084fc;
+  
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  background-color: var(--color-bg);
+  background: linear-gradient(135deg, var(--color-bg-start), var(--color-bg-end));
+  background-attachment: fixed;
   color: var(--color-text);
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
-    'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  width: 100%;
+  max-width: 480px; /* Tighter mobile focus */
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-#app {
-  width: 100%;
-  max-width: 600px; /* Mobile first constrained width on desktop */
-  margin: 0 auto;
-  padding: 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-h1,
-h2,
-h3 {
-  line-height: 1.2;
-  margin-bottom: 1rem;
+h1, h2, h3 {
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 button {
   cursor: pointer;
   border: none;
   font-family: inherit;
+  background: none;
 }
 
+/* Glassmorphism Buttons & Cards */
 .btn {
   display: block;
   width: 100%;
-  padding: 1rem;
+  padding: 1.25rem;
   font-size: 1.1rem;
   font-weight: 600;
-  border-radius: 12px;
-  background-color: var(--color-surface);
-  color: var(--color-primary);
+  border-radius: 20px;
+  background: var(--color-surface);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: var(--glass-border);
+  color: var(--color-text);
   text-align: center;
   margin-bottom: 1rem;
-  transition:
-    transform 0.1s,
-    background-color 0.2s;
-  text-decoration: none; /* If used as router-link */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  background: var(--color-surface-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
 }
 
 .btn:active {
@@ -72,42 +86,58 @@ button {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background: var(--color-primary);
   color: #0f172a;
+  border: none;
+  box-shadow: 0 0 20px var(--color-primary-glow);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-primary-hover);
+  background: #6366f1;
+  box-shadow: 0 0 30px var(--color-primary-glow);
 }
 
-input[type='time'] {
+/* Time Input Styling */
+input[type="time"] {
   display: block;
   width: 100%;
-  padding: 1rem;
-  font-size: 2rem;
-  background: var(--color-surface);
-  border: 2px solid var(--color-primary);
-  border-radius: 12px;
+  padding: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
   color: var(--color-text);
   text-align: center;
   margin: 2rem 0;
   color-scheme: dark;
+  transition: border-color 0.3s;
+  outline: none;
 }
 
+input[type="time"]:focus {
+  border-color: var(--color-primary);
+}
+
+/* Card Styling */
 .card {
-  background: var(--color-surface);
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
   padding: 1.5rem;
-  border-radius: 16px;
+  border-radius: 24px;
   margin-bottom: 1rem;
-  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.2s;
 }
 
+/* Animations */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  transform: translateY(10px);
 }

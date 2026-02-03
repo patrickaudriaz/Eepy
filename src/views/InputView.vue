@@ -44,13 +44,18 @@ function goBack() {
 <template>
   <div class="input-view">
     <header>
-      <button class="back-link" @click="goBack">← Back</button>
+      <button class="back-link" @click="goBack">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back
+      </button>
     </header>
 
     <div class="content">
       <h2>{{ title }}</h2>
 
-      <input type="time" v-model="time" required />
+      <div class="time-wrapper">
+        <input type="time" v-model="time" required />
+      </div>
 
       <button class="btn btn-primary" :disabled="!time" @click="calculate">Calculate</button>
     </div>
@@ -71,11 +76,17 @@ header {
 .back-link {
   background: none;
   border: none;
-  color: var(--color-text);
+  color: var(--color-text-muted);
   font-size: 1rem;
-  padding: 0;
-  width: auto;
-  text-align: left;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--color-text);
 }
 
 .content {
@@ -83,5 +94,14 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  background: linear-gradient(to right, #f8fafc, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 </style>

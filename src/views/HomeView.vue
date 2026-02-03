@@ -30,23 +30,24 @@ function selectBedTime() {
 <template>
   <div class="home-view">
     <div class="hero">
+      <div class="logo">😴</div>
       <h1>eepy</h1>
       <p>Optimize your sleep cycles</p>
     </div>
 
     <nav class="menu">
       <button @click="sleepNow" class="btn btn-primary">
-        Sleep Now
+        <div>Sleep Now</div>
         <span class="subtext">Calculate wake up times for now</span>
       </button>
 
       <button @click="selectWakeUp" class="btn">
-        Select Wake Up Time
+        <div>Select Wake Up Time</div>
         <span class="subtext">Find out when to go to bed</span>
       </button>
 
       <button @click="selectBedTime" class="btn">
-        Select Bed Time
+        <div>Select Bed Time</div>
         <span class="subtext">Find out when to wake up</span>
       </button>
     </nav>
@@ -66,18 +67,36 @@ function selectBedTime() {
   text-align: center;
 }
 
+.logo {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
 .hero h1 {
-  font-size: 4rem;
-  font-weight: 800;
-  color: var(--color-primary);
+  font-size: 3.5rem;
+  background: linear-gradient(to right, #818cf8, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
+}
+
+.hero p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
 }
 
 .subtext {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 400;
   opacity: 0.7;
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 </style>
