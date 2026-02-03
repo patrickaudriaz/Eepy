@@ -79,13 +79,16 @@ watch(
   () => props.modelValue,
   (newVal) => {
     if (!newVal) return
-    const [h, m] = newVal.split(':').map(Number)
-    if (h !== selectedHour.value && hourRef.value) {
+    const [hStr, mStr] = newVal.split(':')
+    const h = Number(hStr)
+    const m = Number(mStr)
+
+    if (!isNaN(h) && h !== selectedHour.value && hourRef.value) {
       selectedHour.value = h
       scrollToPosition(hourRef.value, h)
     }
     const mIndex = Math.round((m || 0) / 5) % 12
-    if (mIndex !== selectedMinute.value && minuteRef.value) {
+    if (!isNaN(mIndex) && mIndex !== selectedMinute.value && minuteRef.value) {
       selectedMinute.value = mIndex
       scrollToPosition(minuteRef.value, mIndex)
     }

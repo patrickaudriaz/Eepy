@@ -20,12 +20,24 @@ const calculatedTimes = computed(() => {
   }
 
   // Map cycles to times
-  return CYCLES.map((cycles, index) => ({
-    cycles,
-    time: times[index],
-    formatted: formatTime(times[index]),
-    label: `${cycles} Cycles (${cycles * 1.5} Hours)`,
-  }))
+  return CYCLES.map((cycles, index) => {
+    const time = times[index]
+    if (!time) {
+      // Fallback or error, shouldn't happen
+      return {
+        cycles,
+        time: new Date(),
+        formatted: '--:--',
+        label: `${cycles} Cycles`,
+      }
+    }
+    return {
+      cycles,
+      time: time,
+      formatted: formatTime(time),
+      label: `${cycles} Cycles (${cycles * 1.5} Hours)`,
+    }
+  })
 })
 
 const title = computed(() => {
@@ -71,16 +83,18 @@ function goHome() {
 
 <style scoped>
 .result-view {
-  min-height: 100vh;
+  /* min-height: 100vh;  Removed to rely on #app height */
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .content {
   flex: 1;
-  padding: 2rem 0;
+  /* padding: 2rem 0;  Removed to reduce top margin & match InputView's centering */
   display: flex;
   flex-direction: column;
+  /* justify-content: center; Removed to align to top like InputView */
 }
 
 .actions {

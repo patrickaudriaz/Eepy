@@ -21,12 +21,13 @@ const title = computed(() => {
 })
 
 function openNativePicker() {
-  if (nativeInput.value) {
-    if ('showPicker' in nativeInput.value) {
-      nativeInput.value.showPicker()
+  const el = nativeInput.value as any
+  if (el) {
+    if ('showPicker' in el) {
+      el.showPicker()
     } else {
-      nativeInput.value.focus()
-      nativeInput.value.click()
+      el.focus()
+      el.click()
     }
   }
 }
@@ -37,7 +38,9 @@ function calculate() {
   // Create a Date object for the selected time
   // The date part doesn't matter as much, but we need to handle "next day" logic if needed.
   // Actually, for just calculating cycles, we can just work with an arbitrary date + time.
-  const [hours, minutes] = time.value.split(':').map(Number)
+  const [hStr, mStr] = time.value.split(':')
+  const hours = Number(hStr)
+  const minutes = Number(mStr)
   const date = new Date()
   date.setHours(hours, minutes, 0, 0)
 
@@ -67,7 +70,7 @@ function goBack() {
 
       <div class="time-wrapper">
         <!-- Hidden Native Input -->
-        <input ref="nativeInput" type="time" v-model="time" class="hidden-native-input" />
+        <input ref="nativeInput" type="time" v-model="time" required class="hidden-native-input" />
 
         <!-- Wheel Picker (Always Visible) -->
         <div @click="openNativePicker" class="picker-container">
