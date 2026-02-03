@@ -31,7 +31,7 @@ function selectBedTime() {
   <div class="home-view">
     <div class="hero">
       <div class="logo">😴</div>
-      <h1>eepy</h1>
+      <h1>mimir</h1>
       <p>Optimize your sleep cycles</p>
     </div>
 

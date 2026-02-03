@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { CYCLES, formatTime, getIdealBedTimes, getIdealWakeUpTimes } from '../utils/sleep'
+import {
+  addMinutes,
+  CYCLES,
+  formatTime,
+  getIdealBedTimes,
+  getIdealWakeUpTimes,
+  subtractMinutes,
+} from '../utils/sleep'
 
 const route = useRoute()
 const router = useRouter()
 
+const includeFallAsleepTime = ref(true)
 const type = computed(() => route.query.type as 'wake-times' | 'bed-times')
 const referenceTime = computed(() => parseInt(route.query.referenceTime as string))
 
@@ -13,10 +21,20 @@ const calculatedTimes = computed(() => {
   const refDate = new Date(referenceTime.value)
   let times: Date[] = []
 
+  // Fall asleep buffer logic:
+  // If 'wake-times' (Sleep Now/Start): We sleep at Ref Time + 15m. So wake up times are delayed by 15m.
+  // If 'bed-times' (Finish): We need to sleep at Ref Time - Cycles. So we must be in bed (Ref Time - Cycles) - 15m.
+  const buffer = includeFallAsleepTime.value ? 15 : 0
+
   if (type.value === 'wake-times') {
-    times = getIdealWakeUpTimes(refDate)
+    // We start sleeping 'buffer' minutes after bed time
+    const sleepStart = addMinutes(refDate, buffer)
+    times = getIdealWakeUpTimes(sleepStart)
   } else {
-    times = getIdealBedTimes(refDate)
+    // We calculate when to sleep to wake up at refDate
+    const sleepTimes = getIdealBedTimes(refDate)
+    // We need to be in bed 'buffer' minutes before we need to sleep
+    times = sleepTimes.map((date) => subtractMinutes(date, buffer))
   }
 
   // Map cycles to times
@@ -60,6 +78,14 @@ function goHome() {
     <div class="content">
       <h2>{{ title }}</h2>
       <p class="desc">{{ subtitle }}</p>
+
+      <div class="toggle-container" v-if="type === 'wake-times'">
+        <label class="toggle-switch">
+          <input type="checkbox" v-model="includeFallAsleepTime" />
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Include 15m to fall asleep</span>
+      </div>
 
       <div class="results-list">
         <div
@@ -111,7 +137,7 @@ h2 {
 }
 
 .desc {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   color: var(--color-text-muted);
   text-align: center;
   font-size: 1rem;
@@ -122,7 +148,7 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -161,5 +187,65 @@ h2 {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.9;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.toggle-label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.3s;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
 }
 </style>

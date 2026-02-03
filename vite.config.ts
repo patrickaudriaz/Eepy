@@ -14,8 +14,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico'],
       manifest: {
-        name: 'eepy',
-        short_name: 'eepy',
+        name: 'mimir',
+        short_name: 'mimir',
         description: 'Wake up refreshed with 90-minute sleep cycles',
         theme_color: '#0A0A12',
         background_color: '#0A0A12',
