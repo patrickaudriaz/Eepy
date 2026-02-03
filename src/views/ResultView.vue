@@ -45,26 +45,6 @@ function goHome() {
 
 <template>
   <div class="result-view">
-    <header>
-      <button class="back-link" @click="goHome">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-          <path d="M3 3v5h5"></path>
-        </svg>
-        Start Over
-      </button>
-    </header>
-
     <div class="content">
       <h2>{{ title }}</h2>
       <p class="desc">{{ subtitle }}</p>
@@ -81,6 +61,10 @@ function goHome() {
           <div v-if="item.cycles >= 5" class="badge">Recommended</div>
         </div>
       </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" @click="goHome">Start Over</button>
+      </div>
     </div>
   </div>
 </template>
@@ -88,30 +72,20 @@ function goHome() {
 <style scoped>
 .result-view {
   min-height: 100vh;
-}
-
-header {
-  padding: 1rem 0;
-}
-
-.back-link {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-size: 1rem;
-  padding: 0.5rem 0;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: color 0.2s;
-}
-
-.back-link:hover {
-  color: var(--color-text);
+  flex-direction: column;
 }
 
 .content {
-  padding-bottom: 2rem;
+  flex: 1;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.actions {
+  margin-top: auto;
+  padding-top: 2rem;
 }
 
 h2 {
@@ -165,13 +139,14 @@ h2 {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   background: var(--color-primary);
   color: #0f172a;
-  padding: 0.2rem 0.5rem;
-  border-radius: 20px;
+  padding: 0.15rem 0.4rem;
+  border-radius: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  opacity: 0.9;
 }
 </style>

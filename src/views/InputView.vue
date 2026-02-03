@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import TimePicker from '../components/TimePicker.vue'
 
 const route = useRoute()
 const router = useRouter()
 
 const mode = computed(() => route.query.mode as 'wake' | 'bed')
-const time = ref('') // HTML time input uses "HH:mm" 24h format
+const time = ref('') // "HH:mm" format
+
+onMounted(() => {
+  // Set default time to current time
+  const now = new Date()
+  time.value = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+})
 
 const title = computed(() => {
   return mode.value === 'wake' ? 'When do you want to wake up?' : 'When do you plan to go to bed?'
@@ -43,34 +50,17 @@ function goBack() {
 
 <template>
   <div class="input-view">
-    <header>
-      <button class="back-link" @click="goBack">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        Back
-      </button>
-    </header>
-
     <div class="content">
       <h2>{{ title }}</h2>
 
       <div class="time-wrapper">
-        <input type="time" v-model="time" required />
+        <TimePicker v-model="time" />
       </div>
 
-      <button class="btn btn-primary" :disabled="!time" @click="calculate">Calculate</button>
+      <div class="actions">
+        <button class="btn btn-primary" :disabled="!time" @click="calculate">Calculate</button>
+        <button class="btn btn-secondary" @click="goBack">Back</button>
+      </div>
     </div>
   </div>
 </template>
@@ -82,31 +72,26 @@ function goBack() {
   height: 100%;
 }
 
-header {
-  padding: 1rem 0;
-}
-
-.back-link {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-size: 1rem;
-  padding: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: color 0.2s;
-}
-
-.back-link:hover {
-  color: var(--color-text);
-}
-
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.time-wrapper {
+  margin-bottom: 2rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 h2 {
