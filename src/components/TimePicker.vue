@@ -101,13 +101,7 @@ watch(
     <!-- Hours Column -->
     <div class="column" ref="hourRef" @scroll.passive="(e) => handleScroll('hour', e)">
       <div class="spacer"></div>
-      <div
-        v-for="(h, i) in hours"
-        :key="h"
-        class="item"
-        :class="{ active: i === selectedHour }"
-        @click="scrollToPosition(hourRef, i)"
-      >
+      <div v-for="(h, i) in hours" :key="h" class="item" :class="{ active: i === selectedHour }">
         {{ h }}
       </div>
       <div class="spacer"></div>
@@ -123,7 +117,6 @@ watch(
         :key="m"
         class="item"
         :class="{ active: i === selectedMinute }"
-        @click="scrollToPosition(minuteRef, i)"
       >
         {{ m }}
       </div>
