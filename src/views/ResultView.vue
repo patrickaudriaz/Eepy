@@ -84,8 +84,7 @@ function goHome() {
 }
 
 .actions {
-  margin-top: auto;
-  padding-top: 2rem;
+  margin-top: 2rem;
 }
 
 h2 {

@@ -8,6 +8,7 @@ const router = useRouter()
 
 const mode = computed(() => route.query.mode as 'wake' | 'bed')
 const time = ref('') // "HH:mm" format
+const useNativePicker = ref(false)
 
 onMounted(() => {
   // Set default time to current time
@@ -54,7 +55,41 @@ function goBack() {
       <h2>{{ title }}</h2>
 
       <div class="time-wrapper">
-        <TimePicker v-model="time" />
+        <input v-if="useNativePicker" type="time" v-model="time" required class="native-input" />
+        <TimePicker v-else v-model="time" />
+
+        <button class="toggle-picker" @click="useNativePicker = !useNativePicker">
+          <svg
+            v-if="!useNativePicker"
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+          </svg>
+          {{ useNativePicker ? 'Use Wheel Picker' : 'Use System Picker' }}
+        </button>
       </div>
 
       <div class="actions">
@@ -81,6 +116,40 @@ function goBack() {
 
 .time-wrapper {
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.native-input {
+  /* Inherit main.css styling but specific overrides if needed */
+  margin: 0;
+}
+
+.toggle-picker {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  text-decoration: none;
+  opacity: 0.7;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: opacity 0.2s;
+  padding: 0.5rem;
+}
+
+.toggle-picker:hover {
+  opacity: 1;
+}
+
+@media (min-width: 768px) {
+  .toggle-picker {
+    display: none;
+  }
 }
 
 .actions {

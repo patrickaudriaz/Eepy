@@ -10,7 +10,7 @@ const emit = defineEmits<{
 }>()
 
 const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
-const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'))
+const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'))
 
 const hourRef = ref<HTMLElement | null>(null)
 const minuteRef = ref<HTMLElement | null>(null)
@@ -26,12 +26,13 @@ function parseInitialValue() {
   if (!props.modelValue) {
     const now = new Date()
     selectedHour.value = now.getHours()
-    selectedMinute.value = now.getMinutes()
+    // Round to nearest 5 minutes
+    selectedMinute.value = Math.round(now.getMinutes() / 5) % 12
     updateValue()
   } else {
     const [h, m] = props.modelValue.split(':').map(Number)
     selectedHour.value = h || 0
-    selectedMinute.value = m || 0
+    selectedMinute.value = Math.round((m || 0) / 5) % 12
   }
 }
 
@@ -52,7 +53,7 @@ function handleScroll(type: 'hour' | 'minute', event: Event) {
     }
   } else {
     if (selectedMinute.value !== index) {
-      selectedMinute.value = Math.max(0, Math.min(59, index))
+      selectedMinute.value = Math.max(0, Math.min(11, index))
       updateValue()
     }
   }
@@ -83,9 +84,10 @@ watch(
       selectedHour.value = h
       scrollToPosition(hourRef.value, h)
     }
-    if (m !== selectedMinute.value && minuteRef.value) {
-      selectedMinute.value = m
-      scrollToPosition(minuteRef.value, m)
+    const mIndex = Math.round((m || 0) / 5) % 12
+    if (mIndex !== selectedMinute.value && minuteRef.value) {
+      selectedMinute.value = mIndex
+      scrollToPosition(minuteRef.value, mIndex)
     }
   },
 )
