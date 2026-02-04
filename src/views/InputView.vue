@@ -11,9 +11,16 @@ const time = ref('') // "HH:mm" format
 const nativeInput = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
-  // Set default time to current time
-  const now = new Date()
-  time.value = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+  // Set default times based on mode
+  if (mode.value === 'wake') {
+    time.value = '07:00'
+  } else if (mode.value === 'bed') {
+    time.value = '23:00'
+  } else {
+    // Fallback or other modes (current time)
+    const now = new Date()
+    time.value = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+  }
 })
 
 const title = computed(() => {

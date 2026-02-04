@@ -59,14 +59,14 @@ const calculatedTimes = computed(() => {
 })
 
 const title = computed(() => {
-  return type.value === 'wake-times' ? 'Ideal Wake Up Times' : 'Ideal Bed Times'
+  return type.value === 'wake-times' ? 'Best times to wake up' : 'Best times to sleep'
 })
 
-const subtitle = computed(() => {
-  return type.value === 'wake-times'
-    ? 'To feel refreshed, you should wake up at one of these times:'
-    : 'To wake up feeling refreshed, you should go to bed at one of these times:'
+const referenceLabel = computed(() => {
+  return type.value === 'wake-times' ? 'Bedtime' : 'Wake Up Time'
 })
+
+const formattedReferenceTime = computed(() => formatTime(new Date(referenceTime.value)))
 
 function goHome() {
   router.push('/')
@@ -77,9 +77,12 @@ function goHome() {
   <div class="result-view">
     <div class="content">
       <h2>{{ title }}</h2>
-      <p class="desc">{{ subtitle }}</p>
+      <div class="selected-time-display">
+        <span class="label">{{ referenceLabel }}</span>
+        <span class="value">{{ formattedReferenceTime }}</span>
+      </div>
 
-      <div class="toggle-container" v-if="type === 'wake-times'">
+      <div class="toggle-container">
         <label class="toggle-switch">
           <input type="checkbox" v-model="includeFallAsleepTime" />
           <span class="slider"></span>
@@ -127,6 +130,38 @@ function goHome() {
   margin-top: 2rem;
 }
 
+.selected-time-display {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Changed from baseline for vertical centering */
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  margin-bottom: 1.4rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  align-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.selected-time-display .label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 0;
+}
+
+.selected-time-display .value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: none;
+}
+
 h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -137,7 +172,7 @@ h2 {
 }
 
 .desc {
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   color: var(--color-text-muted);
   text-align: center;
   font-size: 1rem;
@@ -178,7 +213,7 @@ h2 {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   background: var(--color-primary);
   color: #0f172a;
   padding: 0.15rem 0.4rem;
@@ -186,7 +221,7 @@ h2 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .toggle-container {
@@ -194,7 +229,7 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .toggle-label {
