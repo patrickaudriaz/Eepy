@@ -88,7 +88,7 @@ function selectBedTime() {
 
 .subtext {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 400;
   opacity: 0.7;
   margin-top: 0.4rem;

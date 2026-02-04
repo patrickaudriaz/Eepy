@@ -211,9 +211,9 @@ h2 {
 
 .badge {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 0.5rem;
+  top: 0.9rem;
+  right: 0.9rem;
+  font-size: 0.55rem;
   background: var(--color-primary);
   color: #0f172a;
   padding: 0.15rem 0.4rem;
