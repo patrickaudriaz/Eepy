@@ -150,6 +150,6 @@ h2 {
 
 .actions {
   margin-top: 2rem;
-  margin-bottom: 8rem;
+  margin-bottom: 4rem;
 }
 </style>

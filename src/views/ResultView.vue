@@ -117,7 +117,7 @@ function goHome() {
 
       <div class="expand-options">
         <button class="btn-link" @click="isBranyMode = !isBranyMode">
-          {{ isBranyMode ? 'Show standard cycles only' : 'Brany mode (extra cycles)' }}
+          {{ isBranyMode ? 'Show standard options only' : 'Brany mode (less cycles)' }}
         </button>
       </div>
 
