@@ -111,6 +111,17 @@ button {
   box-shadow: 0 0 30px var(--color-primary-glow);
 }
 
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
 /* Time Input Styling */
 input[type='time'] {
   display: block;

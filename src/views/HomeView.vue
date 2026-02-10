@@ -50,6 +50,11 @@ function selectBedTime() {
         <div>Select Bed Time</div>
         <span class="subtext">Find out when to wake up</span>
       </button>
+
+      <button @click="router.push('/nap')" class="btn btn-secondary">
+        <div>Take a Power Nap</div>
+        <span class="subtext">Quick recharge (20m or 90m)</span>
+      </button>
     </nav>
   </div>
 </template>
@@ -60,6 +65,7 @@ function selectBedTime() {
   flex-direction: column;
   height: 100%;
   justify-content: center;
+  margin-bottom: 2rem;
 }
 
 .hero {
