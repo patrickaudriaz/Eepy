@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   addMinutes,
+  BRANY_CYCLES,
   CYCLES,
   formatTime,
   getIdealBedTimes,
@@ -14,8 +15,17 @@ const route = useRoute()
 const router = useRouter()
 
 const includeFallAsleepTime = ref(true)
+const isBranyMode = ref(false)
 const type = computed(() => route.query.type as 'wake-times' | 'bed-times')
 const referenceTime = computed(() => parseInt(route.query.referenceTime as string))
+
+const activeCycles = computed(() => {
+  const result = [...CYCLES]
+  if (isBranyMode.value) {
+    result.push(...BRANY_CYCLES)
+  }
+  return result.sort((a, b) => a - b)
+})
 
 const calculatedTimes = computed(() => {
   const refDate = new Date(referenceTime.value)
@@ -25,20 +35,21 @@ const calculatedTimes = computed(() => {
   // If 'wake-times' (Sleep Now/Start): We sleep at Ref Time + 15m. So wake up times are delayed by 15m.
   // If 'bed-times' (Finish): We need to sleep at Ref Time - Cycles. So we must be in bed (Ref Time - Cycles) - 15m.
   const buffer = includeFallAsleepTime.value ? 15 : 0
+  const cyclesList = activeCycles.value
 
   if (type.value === 'wake-times') {
     // We start sleeping 'buffer' minutes after bed time
     const sleepStart = addMinutes(refDate, buffer)
-    times = getIdealWakeUpTimes(sleepStart)
+    times = getIdealWakeUpTimes(sleepStart, cyclesList)
   } else {
     // We calculate when to sleep to wake up at refDate
-    const sleepTimes = getIdealBedTimes(refDate)
+    const sleepTimes = getIdealBedTimes(refDate, cyclesList)
     // We need to be in bed 'buffer' minutes before we need to sleep
     times = sleepTimes.map((date) => subtractMinutes(date, buffer))
   }
 
   // Map cycles to times
-  return CYCLES.map((cycles, index) => {
+  return cyclesList.map((cycles, index) => {
     const time = times[index]
     if (!time) {
       // Fallback or error, shouldn't happen
@@ -90,17 +101,24 @@ function goHome() {
         <span class="toggle-label">Include 15m to fall asleep</span>
       </div>
 
-      <div class="results-list">
+      <TransitionGroup name="list" tag="div" class="results-list">
         <div
           v-for="item in calculatedTimes"
           :key="item.cycles"
           class="card result-card"
-          :class="{ highlight: item.cycles === 5 || item.cycles === 6 }"
+          :class="{ highlight: item.cycles === 5 || item.cycles === 6, warning: item.cycles <= 3 }"
         >
           <div class="time">{{ item.formatted }}</div>
           <div class="cycles">{{ item.label }}</div>
           <div v-if="item.cycles >= 5" class="badge">Recommended</div>
+          <div v-else-if="item.cycles <= 3" class="badge warning">Zombie</div>
         </div>
+      </TransitionGroup>
+
+      <div class="expand-options">
+        <button class="btn-link" @click="isBranyMode = !isBranyMode">
+          {{ isBranyMode ? 'Show standard cycles only' : 'Brany mode (extra cycles)' }}
+        </button>
       </div>
 
       <div class="actions">
@@ -127,7 +145,8 @@ function goHome() {
 }
 
 .actions {
-  margin-top: 2rem;
+  margin-top: 1.7rem;
+  margin-bottom: 8rem;
 }
 
 .selected-time-display {
@@ -194,6 +213,11 @@ h2 {
   box-shadow: 0 0 30px rgba(129, 140, 248, 0.1);
 }
 
+.result-card.warning {
+  border-color: rgba(248, 113, 113, 0.8);
+  background: rgba(248, 113, 113, 0.1);
+}
+
 .time {
   font-size: 3rem;
   font-weight: 700;
@@ -222,6 +246,11 @@ h2 {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.8;
+}
+
+.badge.warning {
+  background: #f87171;
+  color: #450a0a;
 }
 
 .toggle-container {
@@ -282,5 +311,54 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(20px);
+}
+
+.expand-options {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0rem;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none; /* Changed from underline to none for sleeker look, maybe specific request? "subtle" */
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+}
+
+.btn-link:hover {
+  opacity: 1;
+  color: #fff;
+  text-decoration: underline;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* List Transitions */
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+}
+
+.list-leave-active {
+  position: absolute;
+  width: 100%;
 }
 </style>
